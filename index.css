@@ -1,0 +1,242 @@
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+  
+  body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+  }
+  
+  
+  /* input {
+    width: 75px;
+  } */
+  
+  #container-background {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: beige;
+    position: absolute;
+  }
+  
+  #container {
+    margin: 0 auto;
+    background-color: white;
+  }
+  
+  #grid-column {
+    display: flex;
+    align-items: center;
+    background-color: beige;
+  }
+  
+  #grid-row {
+    display: flex;
+  }
+  
+
+  
+  #vertical-slider {
+    position: absolute;
+    -webkit-appearance: none;
+    padding: 0 5px;
+    margin-left: 30px;
+    transform: rotate(-90deg) translate(-100%);
+    transform-origin: 0 0;
+    visibility: hidden;
+  }
+  
+  #horizontal-slider {
+    padding: 0 5px;
+    margin-top: 30px;
+    visibility: hidden;
+  }
+  
+  .slidecontainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .slider {
+    -webkit-appearance: none;
+    appearance: none;
+  
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: 0.2s;
+    transition: opacity 0.2s;
+  }
+  
+  .slider:hover {
+    opacity: 1;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: grey;
+    cursor: pointer;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: grey;
+    cursor: pointer;
+  }
+  
+
+  h1,
+  h2,
+  h3,
+  ul,
+  li {
+      margin: 0;
+      padding: 0;
+  }
+
+  h1 {
+      position: relative;
+      margin-top: 54px;
+      font-size: 36px;
+      line-height: 54px;
+      font-weight: 400;
+      text-align: center;
+      text-shadow: 0 1px 1px #fff;
+  }
+
+  .flBtn {
+      position: fixed;
+      z-index: 1000;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      outline: none;
+      text-decoration: none;
+  }
+
+  .flBtn ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      outline: none;
+      text-decoration: none;
+  }
+
+  .flBtn input:hover+button {
+      color: #383838;
+      background: #4db6ac;
+  }
+
+  .flBtn button, input {
+      position: relative;
+      z-index: 2;
+      display: block;
+      border: none;
+      text-decoration: none;
+      text-align: center;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      background: #ffffff;
+      color: #3aa4c9;
+      transition: background 0.5s;
+      -o-transition: background 0.5s;
+      -ms-transition: background 0.5s;
+      -moz-transition: background 0.5s;
+      -webkit-transition: background 0.5s;
+  }
+
+  .flBtn button:hover, input:hover {
+      color: #383838;
+      background: #3aa4c9;
+  }
+
+  .flBtn ul li {
+      margin: 5px;
+  }
+
+  .flBtn-size-medium ul button, ul input {
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      font-size: 16px;
+  }
+
+  .flBtn-size-small ul button, ul input {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 16px;
+}
+
+  .flBtn-position-br .flBtn-first {
+      right: 50%;
+      transform: translateX(50%);
+      margin-top: 50px;
+      bottom: 100%;
+  }
+
+  .flBtn-picker {
+    display: flex;
+    /* top: 50%; */
+    transform: translate(20%, -110%);
+    /* transform: translateY(-90%); */
+    /* right: 100%; */
+  }
+
+  #blue {
+    background-color: blue;
+  }
+
+  #green {
+    background-color: green;
+  }
+
+  #yellow {
+    background-color: yellow;
+  }
+
+  #red {
+    background-color: red;
+  }
+
+  #black {
+    background-color: black;
+  }
+
+  #purple {
+    background-color: purple;
+  }
+
+  #colorPickerPencil {
+    visibility: hidden;
+  }
+
+  #colorPickerCurve {
+    visibility: hidden;
+  }
+
+  #captureMenu {
+    visibility: hidden;
+    position: absolute;
+  }
+
+  #imageCapture {
+    visibility: hidden;
+    position: absolute;
+  } 
+
+  #video {
+    margin: 50;
+  }

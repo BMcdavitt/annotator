@@ -1,0 +1,347 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annotator</title>
+
+
+    <script src="https://unpkg.com/konva@8/konva.min.js"></script>
+    </script>
+
+    <script src="containerSize.js"></script>
+
+    <link rel="stylesheet" href="index.css">
+    <script src="https://kit.fontawesome.com/cba63b9818.js" crossorigin="anonymous"></script>
+
+    <script>
+        const defaultWidth = screen.width - 100
+        const defaultHeight = screen.height - 100
+
+
+        let globalHScale = 1
+        let globalWScale = 1
+
+        let defaultImage = 'dig.jpg'
+
+    </script>
+
+</head>
+
+<body>
+
+    <div class="flBtn flBtn-position-br flBtn-size-medium" id="mainMenu">
+
+        <ul class="flBtn-first">
+            <li><button tooltip="Pencil" onClick="toggleDraw()" id="pencilButton"><i class="fas fa-pencil"></i></button>
+                <div class="flBtn flBtn-position-br flBtn-size-small" id="colorPickerPencil">
+                    <ul class="flBtn-picker">
+                        <li><button class="flBtnPicker" tooltip="blue" id="blue"
+                                onClick="pickColor('pencil',this.id)"></button></li>
+                        <li><button class="flBtnPicker" tooltip="blue" id="green"
+                                onClick="pickColor('pencil',this.id)"></button></li>
+                        <li><button class="flBtnPicker" tooltip="blue" id="yellow"
+                                onClick="pickColor('pencil',this.id)"></button></li>
+                        <li><button class="flBtnPicker" tooltip="blue" id="red"
+                                onClick="pickColor('pencil',this.id)"></button></li>
+                        <li><button class="flBtnPicker" tooltip="blue" id="black"
+                                onClick="pickColor('pencil',this.id)"></button></li>
+                        <li><button class="flBtnPicker" tooltip="blue" id="purple"
+                                onClick="pickColor('pencil',this.id)"></button></li>
+                    </ul>
+                </div>
+            </li>
+            <li><button tooltip="Curve" onClick="toggleCurve()" id="curveButton"><i
+                        class="fas fa-bezier-curve"></i></button>
+                <div class="flBtn flBtn-position-br flBtn-size-small" id="colorPickerCurve">
+                    <ul class="flBtn-picker">
+                        <li><button class="flBtnPicker" tooltip="blue" id="blue"
+                                onClick="pickColor('curve',this.id)"></button></li>
+                        <li><button class="flBtnPicker" tooltip="blue" id="green"
+                                onClick="pickColor('curve',this.id)"></button></li>
+                        <li><button class="flBtnPicker" tooltip="blue" id="yellow"
+                                onClick="pickColor('curve',this.id)"></button></li>
+                        <li><button class="flBtnPicker" tooltip="blue" id="red"
+                                onClick="pickColor('curve',this.id)"></button></li>
+                        <li><button class="flBtnPicker" tooltip="blue" id="black"
+                                onClick="pickColor('curve',this.id)"></button></li>
+                        <li><button class="flBtnPicker" tooltip="blue" id="purple"
+                                onClick="pickColor('curve',this.id)"></button></li>
+                    </ul>
+                </div>
+            </li>
+            <li><button tooltip="Eraser" onClick="toggleEraser()" id="eraserButton"><i
+                        class="fas fa-eraser"></i></button></li>
+            <li><button tooltip="Undo" onClick="undo_drawing()"><i class="fas fa-rotate-left"></i></button></li>
+            <li><button tooltip="Redo" onClick="redo_drawing()"><i class="fas fa-rotate-right"></i></button></li>
+            <!-- <li><button tooltip="Photo" onClick="selectImage()"><i class="fas fa-image"></i></button></li> -->
+            <li><button tooltip="Capture" id="capturePhotoButton"><i class="fas fa-camera"></i></button></li>
+            <li><button tooltip="Grid" onClick="toggleGridSelect()" id="gridButton"><i class="fas fa-th"></i></button>
+            <li><button tooltip="Save" onClick="saveStageState()" id="saveButton"><i class="fas fa-download"></i></button>
+            <li><button tooltip="Load" onClick="loadStageState()" id="loadButton"><i class="fas fa-upload"></i></button>
+            </li>
+        </ul>
+
+    </div>
+
+    <div class="flBtn flBtn-position-br flBtn-size-medium" id="captureMenu">
+        <ul class="flBtn-first">
+            <li><button tooltip="" onClick="captureNewImage()" id="pencilButton"><i class="fas fa-camera"></i></button>
+            </li>
+            <li><button tooltip="" onClick="exitCapturePhoto()" id="curveButton"><i
+                        class="fas fa-arrow-right-from-bracket"></i></button></li>
+        </ul>
+    </div>
+
+    <div id="container-background">
+        <div id="grid-column">
+            <div id="grid-row">
+                <div>
+                    <div id="container">
+
+
+                    </div>
+                    <div class="slidecontainer">
+                        <input type="range" min="0" max="100" id="horizontal-slider" class="slider">
+                    </div>
+                </div>
+
+                <div class="slidecontainerVert">
+                    <input type="range" min="0" max="100" id="vertical-slider" class="slider">
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="imagecapture">
+        <video id="video" height="75%" autoplay></video>
+        <canvas id="videoCapture"></canvas>
+    </div>
+
+    <script>
+        updateContainerSize(defaultHeight, defaultWidth)
+    </script>
+
+    <script src="konvaDraw.js"></script>
+    <script src="imageCapture.js"></script>
+    <script>
+
+
+        const pencilId = document.getElementById('pencilButton')
+        const curveId = document.getElementById('curveButton')
+        const eraseId = document.getElementById('eraserButton')
+        const gridId = document.getElementById('gridButton')
+
+        buttonOn(gridId)
+
+        function updateSize(newHeight, newWidth) {
+
+            newHeight = newHeight ? newHeight : defaultHeight
+            newWidth = newWidth ? newWidth : defaultWidth
+
+            adjustSize(newHeight, newWidth)
+
+            completeShape()
+
+            console.log('update Size ' + [newHeight, newWidth])
+        }
+
+        updateSize(defaultHeight, defaultWidth)
+
+        function adjustSize(height, width) {
+
+            let newWidth = width
+            let newHeight = height
+            let maxDimensions = getMaxHeightWidth()
+            let containerDimensions = getNewContainerDimensions(
+                height,
+                width
+            )
+
+            stage.scaleX(globalWScale)
+            stage.scaleY(globalWScale)
+
+            updateContainerSize(
+                Math.min(maxDimensions.height, containerDimensions.height),
+                Math.min(maxDimensions.width, containerDimensions.width)
+            )
+
+            updateGraphSize(
+                Math.min(containerDimensions.height, maxDimensions.height),
+                Math.min(containerDimensions.width, maxDimensions.width),
+                height,
+                width
+            )
+
+        }
+
+        window.addEventListener('resize', () => {
+            updateSize(screen.height - 100, screen.width - 100)
+        })
+
+        function toggleCurve() {
+            pencilSelect = 'curve'
+            togglePencil()
+
+            buttonOn(curveId)
+            buttonOff(pencilId)
+
+            showCurveColorPicker()
+            hidePencilColorPicker()
+
+            toggleEraser('Off')
+
+        }
+
+        function toggleDraw(colorFlag) {
+            pencilSelect = 'pencil vector'
+            togglePencil()
+
+            buttonOn(pencilId)
+            buttonOff(curveId)
+
+            if (!colorFlag) {
+                showPencilColorPicker()
+                hideCurveColorPicker()
+            }
+
+            toggleEraser('Off')
+
+        }
+
+        function toggleEraser(override) {
+            if (eraserSelect === 'On' || override === 'Off') {
+                eraserSelect = 'Off'
+                buttonOff(eraseId)
+            } else {
+                eraserSelect = 'On'
+                buttonOn(eraseId)
+            }
+        }
+
+        function toggleGridSelect() {
+            toggleGrid()
+            if (graphVisible) {
+                buttonOn(gridId)
+            } else {
+                buttonOff(gridId)
+            }
+        }
+
+
+        function buttonOff(button) {
+            button.style.backgroundColor = ''
+            button.style.color = '3aa4c9'
+        }
+
+        function buttonOn(button) {
+            button.style.backgroundColor = "3aa4c9"
+            button.style.color = '383838'
+        }
+
+        toggleDraw(1)
+
+        function captureNewImage() {
+            let newPhotoDataUrl = capturePhoto()
+            displayImage(newPhotoDataUrl)
+        }
+
+        function selectImage() {
+
+        }
+
+        function showPencilColorPicker() {
+            document.getElementById('colorPickerPencil').style.visibility = 'visible'
+        }
+
+        function showCurveColorPicker() {
+            document.getElementById('colorPickerCurve').style.visibility = 'visible'
+        }
+
+        function hidePencilColorPicker() {
+            document.getElementById('colorPickerPencil').style.visibility = 'hidden'
+        }
+
+        function hideCurveColorPicker() {
+            document.getElementById('colorPickerCurve').style.visibility = 'hidden'
+        }
+
+
+        function pickColor(tool, buttonId) {
+            if (tool === 'pencil') {
+                document.getElementById('colorPickerPencil').style.visibility = 'hidden'
+                changeBrushColor(buttonId)
+
+            } else if (tool === 'curve') {
+                document.getElementById('colorPickerCurve').style.visibility = 'hidden'
+                changeCurveColor(buttonId)
+            }
+
+
+        }
+
+        function loadStageState() {
+            var input = document.createElement('input');
+            input.type = 'file';
+
+            input.onchange = e => {
+
+                // getting a hold of the file reference
+                var file = e.target.files[0];
+
+                // setting up the reader
+                var reader = new FileReader();
+                reader.readAsText(file, 'UTF-8');
+
+                // here we tell the reader what to do when it's done reading...
+                reader.onload = readerEvent => {
+                    var content = readerEvent.target.result; // this is the content!
+
+
+                    // loadStage(JSON.parse(content), 'dig.jpg')
+                    console.log(JSON.parse(content))
+                    loadStage(JSON.parse(content))
+                    // loadStage('', 'dig.jpg')
+                }
+
+            }
+
+            input.click();
+        }
+
+        function saveStageState() {
+            let jsonStageData = saveStage()
+            downloadJSON('stage.json', JSON.stringify(jsonStageData[0]))
+
+
+            if (jsonStageData[1] !== 'data:,') {
+                downloadPNG('stageBackground.png', jsonStageData[1])
+            }
+
+        }
+
+        function downloadJSON(filename, text) {
+            var link = document.createElement('a')
+            link.setAttribute(
+                'href',
+                'data:text/json;charset=utf-8,' + encodeURIComponent(text)
+            )
+            link.setAttribute('download', filename)
+            link.click()
+        }
+
+        function downloadPNG(finename, content) {
+            var link = document.createElement('a')
+            link.setAttribute('download', finename)
+            link.setAttribute('href', content)
+            link.click()
+        }
+
+    </script>
+
+
+</body>
+
+</html>
