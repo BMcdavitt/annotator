@@ -1,7 +1,7 @@
 [] Upload file from PC
-[] Save Work
-[] Load Load
-[] Select color for pencil
-[] Select color for curve
+[x] Save Work
+[x] Load Load
+[x] Select color for pencil
+[x] Select color for curve
 
-[] Stage does not re-size when changing window size
+[x] Stage does not re-size when changing window size
